@@ -3,13 +3,20 @@ package eu.realalpha.infinityfilter;
 import java.net.InetSocketAddress;
 import java.util.regex.Pattern;
 
-public class DefaultForwardConnection implements ForwardConnection{
+public class DefaultForwardContext implements ForwardContext {
 
     private String token;
     private String host;
     private InetSocketAddress inetSocketAddress;
 
-    public DefaultForwardConnection(String s) {
+
+    public DefaultForwardContext(String token, String host, InetSocketAddress inetSocketAddress) {
+        this.token = token;
+        this.host = host;
+        this.inetSocketAddress = inetSocketAddress;
+    }
+
+    public DefaultForwardContext(String s) {
         String[] strings = s.split(Pattern.quote("\\\\"));
         String[] address = strings[2].split(":");
         String hostname = address[0];

@@ -1,0 +1,5 @@
+name: Forward
+main: eu.realalpha.infinityfilter.spigot.FilterSpigot
+version: 0.0.1
+api-version: 1.13
+depend: [ProtocolLib]

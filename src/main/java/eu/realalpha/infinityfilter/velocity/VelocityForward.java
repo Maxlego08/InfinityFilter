@@ -1,13 +1,15 @@
 package eu.realalpha.infinityfilter.velocity;
 
-import eu.realalpha.infinityfilter.ForwardConnection;
+import com.velocitypowered.api.proxy.InboundConnection;
+import eu.realalpha.infinityfilter.Forward;
+import eu.realalpha.infinityfilter.ForwardContext;
 import eu.realalpha.infinityfilter.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 
-public class VelocityForwardConnection implements ForwardConnection {
+public class VelocityForward implements Forward {
 
 
     private static final Field HANDSHAKE_FIELD;
@@ -18,6 +20,13 @@ public class VelocityForwardConnection implements ForwardConnection {
     private static final Field REMOTE_ADDRESS_FIELD;
     private static final Field LEGACY_MINECRAFT_CONNECTION_FIELD;
     private static final Method CLOSE_CHANNEL_METHOD;
+    private InboundConnection inboundConnection;
+    private ForwardContext forwardContext;
+
+    public VelocityForward(InboundConnection inboundConnection, ForwardContext forwardContext) {
+        this.inboundConnection = inboundConnection;
+        this.forwardContext = forwardContext;
+    }
 
     static {
         try {
@@ -40,11 +49,27 @@ public class VelocityForwardConnection implements ForwardConnection {
 
     @Override
     public void setAddress(InetSocketAddress inetSocketAddress) {
+        try {
+            ReflectionUtils.setFinalField(inboundConnection, CLEANED_ADDRESS_FIELD, inetSocketAddress);
 
+            Object handshake = HANDSHAKE_FIELD.get(inboundConnection);
+            HOSTNAME_FIELD.set(handshake, forwardContext.getHost());
+
+            Object minecraftConnection = MINECRAFT_CONNECTION_FIELD.get(inboundConnection);
+            REMOTE_ADDRESS_FIELD.set(minecraftConnection, inetSocketAddress);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void disconnect() {
-
+        boolean legacy = inboundConnection.getClass() != INITIAL_INBOUND_CONNECTION_CLASS;
+        try {
+            Object minecraftConnection = legacy ? LEGACY_MINECRAFT_CONNECTION_FIELD.get(inboundConnection) : MINECRAFT_CONNECTION_FIELD.get(inboundConnection);
+            CLOSE_CHANNEL_METHOD.invoke(minecraftConnection);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

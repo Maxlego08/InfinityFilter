@@ -2,11 +2,7 @@ package eu.realalpha.infinityfilter;
 
 import java.net.InetSocketAddress;
 
-public interface ForwardConnection {
-
-    default InetSocketAddress getAddress(String s){
-        
-    }
+public interface Forward {
 
     void setAddress(InetSocketAddress inetSocketAddress);
 
