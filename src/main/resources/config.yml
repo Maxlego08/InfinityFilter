@@ -1,2 +1,2 @@
 secret-key: "Put-Key-Here"
-online-mode: false
+allow-external-connexion: true

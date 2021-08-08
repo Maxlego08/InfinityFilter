@@ -38,7 +38,7 @@ public class FilterBungee extends Plugin {
 			this.config = ConfigurationProvider.getProvider(YamlConfiguration.class)
 					.load(new File(this.getDataFolder(), "config.yml"));
 			this.key = this.config.getString("secret-key");
-			this.onlineMode = this.config.getBoolean("online-mode");
+			this.onlineMode = this.config.getBoolean("allow-external-connexion");
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
