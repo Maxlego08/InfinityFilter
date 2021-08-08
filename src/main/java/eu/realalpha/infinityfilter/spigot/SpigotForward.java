@@ -13,46 +13,47 @@ import java.net.SocketAddress;
 
 public class SpigotForward implements Forward {
 
-    private static Class<?> abstractChannelClass;
+	private static Class<?> abstractChannelClass;
 
-    static {
-        try {
-            abstractChannelClass = Class.forName("io.netty.channel.AbstractChannel");
-        } catch (ClassNotFoundException e) {
-            try {
-                abstractChannelClass = Class.forName("net.minecraft.util.io.netty.channel.AbstractChannel");
-            } catch (ClassNotFoundException e2) {
-                throw new RuntimeException(new ReflectionException(e2));
-            }
-        }
-    }
+	static {
+		try {
+			abstractChannelClass = Class.forName("io.netty.channel.AbstractChannel");
+		} catch (ClassNotFoundException e) {
+			try {
+				abstractChannelClass = Class.forName("net.minecraft.util.io.netty.channel.AbstractChannel");
+			} catch (ClassNotFoundException e2) {
+				throw new RuntimeException(new ReflectionException(e2));
+			}
+		}
+	}
 
-    private Player player;
-    private ForwardContext forwardContext;
+	private Player player;
 
-    public SpigotForward(Player player, ForwardContext forwardContext) {
-        this.player = player;
-        this.forwardContext = forwardContext;
-    }
+	public SpigotForward(Player player) {
+		this.player = player;
+	}
 
-    @Override
-    public void setAddress(InetSocketAddress inetSocketAddress) {
-        SocketInjector ignored = TemporaryPlayerFactory.getInjectorFromPlayer(player);
-        try {
-            Object injector = ReflectionUtils.getObjectInPrivateField(ignored, "injector");
-            Object networkManager = ReflectionUtils.getObjectInPrivateField(injector, "networkManager");
+	@Override
+	public void setAddress(InetSocketAddress inetSocketAddress) {
+		SocketInjector ignored = TemporaryPlayerFactory.getInjectorFromPlayer(player);
+		try {
+			Object injector = ReflectionUtils.getObjectInPrivateField(ignored, "injector");
+			Object networkManager = ReflectionUtils.getObjectInPrivateField(injector, "networkManager");
 
-            ReflectionUtils.setFinalField(networkManager, ReflectionUtils.searchFieldByClass(networkManager.getClass(), SocketAddress.class), inetSocketAddress);
+			ReflectionUtils.setFinalField(networkManager,
+					ReflectionUtils.searchFieldByClass(networkManager.getClass(), SocketAddress.class),
+					inetSocketAddress);
 
-            Object channel = ReflectionUtils.getObjectInPrivateField(injector, "originalChannel");
-            ReflectionUtils.setFinalField(channel, ReflectionUtils.getDeclaredField(abstractChannelClass, "remoteAddress"), inetSocketAddress);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-    }
+			Object channel = ReflectionUtils.getObjectInPrivateField(injector, "originalChannel");
+			ReflectionUtils.setFinalField(channel,
+					ReflectionUtils.getDeclaredField(abstractChannelClass, "remoteAddress"), inetSocketAddress);
+		} catch (IllegalAccessException | NoSuchFieldException e) {
+			e.printStackTrace();
+		}
+	}
 
-    @Override
-    public void disconnect() {
-        player.kickPlayer("");
-    }
+	@Override
+	public void disconnect() {
+		player.kickPlayer("");
+	}
 }
