@@ -22,22 +22,23 @@ public class DefaultForwardContext implements ForwardContext {
         String hostname = address[0];
         int port = Integer.parseInt(address[1]);
         this.inetSocketAddress = new InetSocketAddress(hostname, port);
-        this.host = strings[0];
+        // this.host = strings[0];
+        this.host = hostname;
         this.token = strings[1];
     }
 
     @Override
     public String getToken() {
-        return token;
+        return this.token;
     }
 
     @Override
     public String getHost() {
-        return host;
+        return this.host;
     }
 
     @Override
     public InetSocketAddress getInetSocketAddress() {
-        return inetSocketAddress;
+        return this.inetSocketAddress;
     }
 }
