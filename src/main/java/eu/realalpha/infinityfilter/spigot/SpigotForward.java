@@ -1,15 +1,17 @@
 package eu.realalpha.infinityfilter.spigot;
 
-import com.comphenix.protocol.injector.server.SocketInjector;
-import com.comphenix.protocol.injector.server.TemporaryPlayerFactory;
-import eu.realalpha.infinityfilter.Forward;
-import eu.realalpha.infinityfilter.ForwardContext;
-import eu.realalpha.infinityfilter.ReflectionUtils;
-import org.bukkit.entity.Player;
-
-import javax.management.ReflectionException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+
+import javax.management.ReflectionException;
+
+import org.bukkit.entity.Player;
+
+import com.comphenix.protocol.injector.server.SocketInjector;
+import com.comphenix.protocol.injector.server.TemporaryPlayerFactory;
+
+import eu.realalpha.infinityfilter.Forward;
+import eu.realalpha.infinityfilter.ReflectionUtils;
 
 public class SpigotForward implements Forward {
 

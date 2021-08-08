@@ -38,6 +38,13 @@ public class SetProtocolHandler extends PacketAdapter {
 	public void onPacketReceiving(PacketEvent event) {
 		PacketContainer packet = event.getPacket();
 		Player player = event.getPlayer();
+
+		/*
+		 * if (packet.getType() == PacketType.Status.Server.PONG) {
+		 * System.out.println("Je ping ici whola les amis");
+		 * event.setCancelled(true); return; }
+		 */
+
 		if (packet.getProtocols().read(0) == PacketType.Protocol.LOGIN) {
 			try {
 				String hostname = packet.getStrings().read(0);
@@ -47,8 +54,11 @@ public class SetProtocolHandler extends PacketAdapter {
 				if (hasToken) {
 					forward.setAddress(forwardContext.getInetSocketAddress());
 					packet.getStrings().write(0, forwardContext.getHost());
-				} else if (filterSpigot.isOnlineMode())
-					forward.disconnect();
+				} else {
+
+					if (!filterSpigot.allowExternalConnexion())
+						forward.disconnect();
+				}
 			} catch (Exception e) {
 				this.getPlugin().getLogger().log(Level.SEVERE, e, () -> "");
 			}
