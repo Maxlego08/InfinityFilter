@@ -17,67 +17,63 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-@Plugin(
-        id = "infinityfilter",
-        name = "Infinity-Filter",
-        description = "Forward setup real ip",
-        version = "0.0.1"
-)
+@Plugin(id = "infinityfilter", name = "Infinity-Filter", description = "Forward setup real ip", version = "0.0.1")
 public class FilterVelocity {
 
-    private final ProxyServer server;
-    private final Logger logger;
-    private final Path dataFolder;
-    private final Yaml yaml = new Yaml();
-    private String key;
-    private boolean onlineMode;
+	private final ProxyServer server;
+	private final Logger logger;
+	private final Path dataFolder;
+	private final Yaml yaml = new Yaml();
+	private String key;
+	private boolean allowExternalConnexion;
 
-    @Inject
-    public FilterVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataFolder) {
-        this.server = server;
-        this.logger = logger;
-        this.dataFolder = dataFolder;
-        dataFolder.toFile().mkdir();
-        loadConfig();
+	@Inject
+	public FilterVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataFolder) {
+		this.server = server;
+		this.logger = logger;
+		this.dataFolder = dataFolder;
+		dataFolder.toFile().mkdir();
+		loadConfig();
 
-    }
+	}
 
-    public void loadConfig() {
-        File file;
-        if (!(file = new File(dataFolder.toFile(), "config.yml")).isFile()) {
-            try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("config.yml")) {
-                Files.copy(in, file.toPath());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        try(FileInputStream fileInputStream = new FileInputStream(new File(this.dataFolder.toFile(), "config.yml"))) {
-            Map<String, Object> config = (Map<String, Object>) yaml.load(fileInputStream);
-            this.key = (String) config.get("secret-key");
-            this.onlineMode = (boolean) config.get("online-mode");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+	public void loadConfig() {
+		File file;
+		if (!(file = new File(dataFolder.toFile(), "config.yml")).isFile()) {
+			try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("config.yml")) {
+				Files.copy(in, file.toPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		try (FileInputStream fileInputStream = new FileInputStream(new File(this.dataFolder.toFile(), "config.yml"))) {
+			Map<String, Object> config = (Map<String, Object>) yaml.load(fileInputStream);
+			this.key = (String) config.getOrDefault("secret-key", "key");
+			this.allowExternalConnexion = (boolean) config.getOrDefault("allow-external-connexion", false);
+			System.out.println("Attention, Allow external connexion is not avaible with velocity wet !");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    @Subscribe
-    public void onProxyInitialization(ProxyInitializeEvent event) {
-         server.getEventManager().register(this, new SetProtocolHandler(this));
-    }
+	@Subscribe
+	public void onProxyInitialization(ProxyInitializeEvent event) {
+		server.getEventManager().register(this, new SetProtocolHandler(this));
+	}
 
-    public boolean isOnlineMode() {
-        return onlineMode;
-    }
+	public boolean allowExertalConnexion() {
+		return allowExternalConnexion;
+	}
 
-    public ProxyServer getServer() {
-        return server;
-    }
+	public ProxyServer getServer() {
+		return server;
+	}
 
-    public Logger getLogger() {
-        return logger;
-    }
+	public Logger getLogger() {
+		return logger;
+	}
 
-    public String getKey() {
-        return key;
-    }
+	public String getKey() {
+		return key;
+	}
 }
