@@ -10,6 +10,8 @@ public interface ForwardContext {
 
     InetSocketAddress getInetSocketAddress();
 
+    int getPort();
+    
     static ForwardContext of(String s) {
         return new DefaultForwardContext(s);
     }
@@ -17,5 +19,6 @@ public interface ForwardContext {
     static ForwardContext empty(){
         return new DefaultForwardContext("", "", null);
     }
+
 
 }

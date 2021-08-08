@@ -25,7 +25,7 @@ public class SetProtocolHandler implements Listener {
 			boolean hasToken = rawData.contains(filterBungee.getKey());
 			ForwardContext forwardContext = (hasToken ? ForwardContext.of(rawData) : ForwardContext.empty());
 			Forward forward = new BungeeForward(pendingConnection, forwardContext);
-			if (hasToken) {
+			if (hasToken) {				
 				forward.setAddress(forwardContext.getInetSocketAddress());
 				try {
 					ReflectionUtils.setField(event.getHandshake(), "host", forwardContext.getHost());
