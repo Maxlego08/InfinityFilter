@@ -13,7 +13,7 @@ import java.nio.file.Files;
 public class FilterBungee extends Plugin {
 
 	private String key;
-	private boolean onlineMode;
+	private boolean allowExternalConnexion;
 	private Configuration config;
 
 	@Override
@@ -38,7 +38,7 @@ public class FilterBungee extends Plugin {
 			this.config = ConfigurationProvider.getProvider(YamlConfiguration.class)
 					.load(new File(this.getDataFolder(), "config.yml"));
 			this.key = this.config.getString("secret-key");
-			this.onlineMode = this.config.getBoolean("allow-external-connexion");
+			this.allowExternalConnexion = this.config.getBoolean("allow-external-connexion", false);
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
@@ -48,8 +48,8 @@ public class FilterBungee extends Plugin {
 		return this.key;
 	}
 
-	public boolean isOnlineMode() {
-		return onlineMode;
+	public boolean allowExertalConnexion() {
+		return allowExternalConnexion;
 	}
 
 	public void setKey(String key) {

@@ -10,14 +10,13 @@ import java.util.Scanner;
 public class IpLoader {
 
 	private final String apiURL = "https://www.infinity-filter.com/ips/";
-	private final int cooldownSecond = 60 * 3;
+	private final int cooldownSecond = 60 * 10;
 
 	private final List<String> ips = new ArrayList<String>();
 	private long lastFetchCooldown = 0;
 
 	public void fetchIps() {
 		if (System.currentTimeMillis() > this.lastFetchCooldown) {
-			System.out.println("Début du ping des ips:");
 			try {
 				this.ips.clear();
 				URL url = new URL(apiURL);
