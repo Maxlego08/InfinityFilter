@@ -18,8 +18,8 @@ import java.nio.file.Path;
 import java.util.Map;
 
 @Plugin(
-        id = "forward",
-        name = "Forward",
+        id = "infinityfilter",
+        name = "Infinity-Filter",
         description = "Forward setup real ip",
         version = "0.0.1"
 )

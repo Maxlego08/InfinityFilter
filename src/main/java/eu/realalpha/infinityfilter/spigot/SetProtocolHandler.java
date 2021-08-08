@@ -46,7 +46,7 @@ public class SetProtocolHandler extends PacketAdapter {
                 String hostname = packet.getStrings().read(0);
                 boolean hasToken = hostname.contains(filterSpigot.getKey());
                 ForwardContext forwardContext = (hasToken ? ForwardContext.of(hostname) : ForwardContext.empty());
-                Forward forward = new SpigotForward(player, forwardContext);
+                Forward forward = new SpigotForward(player);
                 if (hasToken){
                     forward.setAddress(forwardContext.getInetSocketAddress());
                     packet.getStrings().write(0, forwardContext.getHost());
